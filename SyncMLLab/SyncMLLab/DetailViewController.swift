@@ -40,6 +40,63 @@ class DetailViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    @IBAction func request(sender: AnyObject) {
+//        let request = NSURLRequest(URL: NSURL(string: "http://localhost/~maulyn/SyncServer")!)
+//        let _ = NSURLConnection(request: request, delegate: self)
+        
+        let postRequestURL = NSURL(string: "http://localhost/~maulyn/do_upload.php")!
+        let formRequest = ASIFormDataRequest.requestWithURL(postRequestURL) as! ASIFormDataRequest
+        formRequest.setFile(NSBundle.mainBundle().pathForResource("DSC_2122", ofType: "JPG")!, forKey: "file")
+        formRequest.delegate = self
+        formRequest.startAsynchronous()
+    }
 
 }
 
+extension DetailViewController: NSURLConnectionDelegate, NSURLConnectionDataDelegate {
+    func connection(connection: NSURLConnection, didFailWithError error: NSError) {
+        print(error.localizedDescription)
+    }
+    
+    func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse) {
+        print(response)
+    }
+    
+    func connection(connection: NSURLConnection, didReceiveData data: NSData) {
+        print(NSString(data: data, encoding: NSUTF8StringEncoding))
+    }
+    
+    func connectionDidFinishLoading(connection: NSURLConnection) {
+        
+    }
+}
+
+extension DetailViewController: ASIHTTPRequestDelegate {
+    func requestStarted(request: ASIHTTPRequest!) {
+        print("request:\(request)")
+    }
+
+    func request(request: ASIHTTPRequest!, didReceiveResponseHeaders responseHeaders: [NSObject : AnyObject]!) {
+        print("response:\(responseHeaders)")
+    }
+    
+    func request(request: ASIHTTPRequest!, willRedirectToURL newURL: NSURL!) {
+        print("newURL\(newURL)")
+    }
+    
+    func requestFinished(request: ASIHTTPRequest!) {
+        print("finished.")
+    }
+    
+    func requestFailed(request: ASIHTTPRequest!) {
+        print("failed.")
+    }
+    
+    func requestRedirected(request: ASIHTTPRequest!) {
+        print("redirected.")
+    }
+    
+    func request(request: ASIHTTPRequest!, didReceiveData data: NSData!) {
+        print(NSString(data: data, encoding: NSUTF8StringEncoding))
+    }
+}
