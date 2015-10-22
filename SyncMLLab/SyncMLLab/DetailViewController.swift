@@ -41,14 +41,15 @@ class DetailViewController: UIViewController {
     }
 
     @IBAction func request(sender: AnyObject) {
-//        let request = NSURLRequest(URL: NSURL(string: "http://localhost/~maulyn/SyncServer")!)
-//        let _ = NSURLConnection(request: request, delegate: self)
+        let request = NSURLRequest(URL: NSURL(string: "http://localhost/~maulyn/SyncServer/generate_xml.php")!)
+        let _ = NSURLConnection(request: request, delegate: self)
         
-        let postRequestURL = NSURL(string: "http://localhost/~maulyn/do_upload.php")!
-        let formRequest = ASIFormDataRequest.requestWithURL(postRequestURL) as! ASIFormDataRequest
-        formRequest.setFile(NSBundle.mainBundle().pathForResource("DSC_2122", ofType: "JPG")!, forKey: "file")
-        formRequest.delegate = self
-        formRequest.startAsynchronous()
+//        let postRequestURL = NSURL(string: "http://localhost/~maulyn/do_upload.php")!
+//        let formRequest = ASIFormDataRequest.requestWithURL(postRequestURL) as! ASIFormDataRequest
+//        formRequest.setFile(NSBundle.mainBundle().pathForResource("Podfile", ofType: nil)!, forKey: "file")
+//        formRequest.delegate = self
+//        formRequest.startAsynchronous()
+        
     }
 
 }
@@ -73,15 +74,17 @@ extension DetailViewController: NSURLConnectionDelegate, NSURLConnectionDataDele
 
 extension DetailViewController: ASIHTTPRequestDelegate {
     func requestStarted(request: ASIHTTPRequest!) {
-        print("request:\(request)")
+        print("started.")
     }
 
     func request(request: ASIHTTPRequest!, didReceiveResponseHeaders responseHeaders: [NSObject : AnyObject]!) {
-        print("response:\(responseHeaders)")
+        print("request:\(request.requestHeaders)")
+        print("status code: \(request.responseStatusCode), response:\(responseHeaders as NSDictionary)")
+        print(request.rawResponseData)
     }
     
     func request(request: ASIHTTPRequest!, willRedirectToURL newURL: NSURL!) {
-        print("newURL\(newURL)")
+        print("newURL:\(newURL)")
     }
     
     func requestFinished(request: ASIHTTPRequest!) {
