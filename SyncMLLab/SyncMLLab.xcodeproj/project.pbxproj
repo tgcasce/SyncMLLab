@@ -13,6 +13,7 @@
 		42B4FBCD1BD651CC009D2C0E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 42B4FBCB1BD651CC009D2C0E /* Main.storyboard */; };
 		42B4FBCF1BD651CC009D2C0E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42B4FBCE1BD651CC009D2C0E /* Assets.xcassets */; };
 		42B4FBD21BD651CC009D2C0E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 42B4FBD01BD651CC009D2C0E /* LaunchScreen.storyboard */; };
+		42BD69871BD9F4EA0019ADF3 /* SyncMLGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BD69861BD9F4EA0019ADF3 /* SyncMLGenerator.swift */; };
 		B4A42B652D73DEAD2635B320 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3550204524468E8332D55A9 /* Pods.framework */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +28,7 @@
 		42B4FBCE1BD651CC009D2C0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		42B4FBD11BD651CC009D2C0E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		42B4FBD31BD651CC009D2C0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		42BD69861BD9F4EA0019ADF3 /* SyncMLGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncMLGenerator.swift; sourceTree = "<group>"; };
 		BF0AF9F1AB2563BC534C87A5 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		C3550204524468E8332D55A9 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -89,6 +91,7 @@
 				42B4FBD01BD651CC009D2C0E /* LaunchScreen.storyboard */,
 				42B4FBD31BD651CC009D2C0E /* Info.plist */,
 				421056A81BD80382002011BB /* SyncMLLab-Bridging-Header.h */,
+				42BD69861BD9F4EA0019ADF3 /* SyncMLGenerator.swift */,
 			);
 			path = SyncMLLab;
 			sourceTree = "<group>";
@@ -216,6 +219,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				42B4FBCA1BD651CC009D2C0E /* DetailViewController.swift in Sources */,
+				42BD69871BD9F4EA0019ADF3 /* SyncMLGenerator.swift in Sources */,
 				42B4FBC81BD651CC009D2C0E /* MasterViewController.swift in Sources */,
 				42B4FBC61BD651CC009D2C0E /* AppDelegate.swift in Sources */,
 			);
