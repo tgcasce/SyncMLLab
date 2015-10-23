@@ -33,14 +33,6 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.configureView()
-        
-        let XML = SyncMLGenerator(messageNumber: 1)
-        XML.addStatusElementForSyncBody(1, cmdRef: 0, cmd: MessageContainerElements.SyncHdr.rawValue, targetRef: "unknow", sourceRef: "unknow", data: "200", nextSyncAnchor: NSDate().description)
-        XML.addAlertElementForSyncBody("209", target: "http://localhost/~maulyn/SyncServer/present_xml.php", source: "file.file", lastSyncAnchor: NSDate().dateByAddingTimeInterval(-10000).description)
-        XML.addSyncElementForSyncBody("", source: "", lastSyncAnchor: "2015-10-23")
-        XML.addElementForSyncCommand("Add")
-        print(XML.XMLDocument.xmlString)
-        print(XML.saveAsXMLFile())
     }
 
     override func didReceiveMemoryWarning() {
@@ -49,14 +41,23 @@ class DetailViewController: UIViewController {
     }
 
     @IBAction func request(sender: AnyObject) {
-        let request = NSURLRequest(URL: NSURL(string: "http://localhost/~maulyn/SyncServer/present_xml.php")!)
-        let _ = NSURLConnection(request: request, delegate: self)
+//        let request = NSURLRequest(URL: NSURL(string: "http://localhost/~maulyn/SyncServer/present_xml.php")!)
+//        let _ = NSURLConnection(request: request, delegate: self)
         
-//        let postRequestURL = NSURL(string: "http://localhost/~maulyn/do_upload.php")!
-//        let formRequest = ASIFormDataRequest.requestWithURL(postRequestURL) as! ASIFormDataRequest
-//        formRequest.setFile(NSBundle.mainBundle().pathForResource("Podfile", ofType: nil)!, forKey: "file")
-//        formRequest.delegate = self
-//        formRequest.startAsynchronous()
+        let XML = SyncMLGenerator(messageNumber: 1)
+        XML.addStatusElementForSyncBody(1, cmdRef: 0, cmd: MessageContainerElements.SyncHdr.rawValue, targetRef: "unknow", sourceRef: "unknow", data: "200", nextSyncAnchor: NSDate().description)
+        XML.addAlertElementForSyncBody("209", target: "http://localhost/~maulyn/SyncServer/present_xml.php", source: "file.file", lastSyncAnchor: NSDate().dateByAddingTimeInterval(-10000).description)
+        XML.addSyncElementForSyncBody("", source: "", lastSyncAnchor: "2015-10-23")
+        XML.addElementForSyncCommand("Add")
+        let xmlPath = XML.saveAsXMLFile()
+        
+        print(xmlPath)
+        
+        let postRequestURL = NSURL(string: "http://localhost/~maulyn/do_upload.php")!
+        let formRequest = ASIFormDataRequest.requestWithURL(postRequestURL) as! ASIFormDataRequest
+        formRequest.setFile(xmlPath, forKey: "file")
+        formRequest.delegate = self
+        formRequest.startAsynchronous()
         
     }
 

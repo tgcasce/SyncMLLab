@@ -102,13 +102,13 @@ class SyncMLGenerator: NSObject {
         return commandElement
     }
     
-    func saveAsXMLFile() -> String {
+    func saveAsXMLFile() -> String? {
         let savePath = NSTemporaryDirectory() + "\(NSDate().description).xml"
         do {
             try XMLDocument.xmlString.writeToFile(savePath, atomically: true, encoding: NSUTF8StringEncoding)
         } catch {
             print(error)
-            return ""
+            return nil
         }
         return savePath
     }
