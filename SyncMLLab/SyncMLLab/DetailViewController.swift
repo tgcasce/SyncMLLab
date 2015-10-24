@@ -41,44 +41,23 @@ class DetailViewController: UIViewController {
     }
 
     @IBAction func request(sender: AnyObject) {
-//        let request = NSURLRequest(URL: NSURL(string: "http://localhost/~maulyn/SyncServer/present_xml.php")!)
-//        let _ = NSURLConnection(request: request, delegate: self)
         
         let XML = SyncMLGenerator(messageNumber: 1)
         XML.addStatusElementForSyncBody(1, cmdRef: 0, cmd: MessageContainerElements.SyncHdr.rawValue, targetRef: "unknow", sourceRef: "unknow", data: "200", nextSyncAnchor: NSDate().description)
-        XML.addAlertElementForSyncBody("209", target: "http://localhost/~maulyn/SyncServer/present_xml.php", source: "file.file", lastSyncAnchor: NSDate().dateByAddingTimeInterval(-10000).description)
+        XML.addAlertElementForSyncBody("211", target: "http://localhost/~maulyn/SyncServer/present_xml.php", source: "file.file", lastSyncAnchor: NSDate().dateByAddingTimeInterval(-10000).description)
         XML.addSyncElementForSyncBody("", source: "", lastSyncAnchor: "2015-10-23")
         XML.addElementForSyncCommand("Add")
         let xmlPath = XML.saveAsXMLFile()
         
         print(xmlPath)
         
-        let postRequestURL = NSURL(string: "http://localhost/~maulyn/do_upload.php")!
+        let postRequestURL = NSURL(string: "http://localhost/~maulyn/SyncServer/transfer_xml.php")!
         let formRequest = ASIFormDataRequest.requestWithURL(postRequestURL) as! ASIFormDataRequest
         formRequest.setFile(xmlPath, forKey: "file")
         formRequest.delegate = self
         formRequest.startAsynchronous()
-        
     }
 
-}
-
-extension DetailViewController: NSURLConnectionDelegate, NSURLConnectionDataDelegate {
-    func connection(connection: NSURLConnection, didFailWithError error: NSError) {
-        print(error.localizedDescription)
-    }
-    
-    func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse) {
-        print(response)
-    }
-    
-    func connection(connection: NSURLConnection, didReceiveData data: NSData) {
-        print(NSString(data: data, encoding: NSUTF8StringEncoding))
-    }
-    
-    func connectionDidFinishLoading(connection: NSURLConnection) {
-        
-    }
 }
 
 extension DetailViewController: ASIHTTPRequestDelegate {
@@ -89,7 +68,6 @@ extension DetailViewController: ASIHTTPRequestDelegate {
     func request(request: ASIHTTPRequest!, didReceiveResponseHeaders responseHeaders: [NSObject : AnyObject]!) {
         print("request:\(request.requestHeaders)")
         print("status code: \(request.responseStatusCode), response:\(responseHeaders as NSDictionary)")
-        print(request.rawResponseData)
     }
     
     func request(request: ASIHTTPRequest!, willRedirectToURL newURL: NSURL!) {
@@ -109,6 +87,10 @@ extension DetailViewController: ASIHTTPRequestDelegate {
     }
     
     func request(request: ASIHTTPRequest!, didReceiveData data: NSData!) {
-        print(NSString(data: data, encoding: NSUTF8StringEncoding))
+        let parser = SyncMLParser(XMLdata: data)
+        print(parser?.syncHdrStatus)
+        print(parser?.alertStatus)
+        print(parser?.syncStatus)
+        print(parser?.commandStatus)
     }
 }
