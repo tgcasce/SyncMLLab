@@ -10,21 +10,24 @@ import UIKit
 
 class MasterViewController: UITableViewController {
 
+    weak var fileWatcher: DirectoryWatcher! = nil
     var detailViewController: DetailViewController? = nil
     var objects = [AnyObject]()
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.navigationItem.leftBarButtonItem = self.editButtonItem()
+        self.fileWatcher = DirectoryWatcher.watchFolderWithPath(NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true).last!, delegate: self)
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "insertNewObject:")
         self.navigationItem.rightBarButtonItem = addButton
         if let split = self.splitViewController {
             let controllers = split.viewControllers
-            self.detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
+            self.detailViewController = (controllers.last as! UINavigationController).topViewController as? DetailViewController
         }
+        
+//        fileWatcher = DirectoryWatcher.watchFolderWithPath("", delegate: self)
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -92,3 +95,14 @@ class MasterViewController: UITableViewController {
 
 }
 
+extension MasterViewController: DirectoryWatcherDelegate {
+    func directoryDidChange(folderWatcher: DirectoryWatcher!) {
+        
+    }
+}
+
+extension MasterViewController {
+    func documentDirectory() -> NSURL {
+        return NSFileManager.defaultManager().URLsForDirectory(NSSearchPathDirectory.DocumentDirectory, inDomains: NSSearchPathDomainMask.UserDomainMask).last!
+    }
+}

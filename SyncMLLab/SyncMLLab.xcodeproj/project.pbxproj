@@ -10,6 +10,7 @@
 		429307321BDD1C54000BD4FB /* SyncMLGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429307301BDD1C54000BD4FB /* SyncMLGenerator.swift */; };
 		429307331BDD1C54000BD4FB /* SyncMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429307311BDD1C54000BD4FB /* SyncMLParser.swift */; };
 		429307371BDD1C89000BD4FB /* TGCFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429307361BDD1C89000BD4FB /* TGCFileManager.swift */; };
+		4293073A1BDD1E5D000BD4FB /* DirectoryWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 429307391BDD1E5D000BD4FB /* DirectoryWatcher.m */; };
 		42B4FBC61BD651CC009D2C0E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B4FBC51BD651CC009D2C0E /* AppDelegate.swift */; };
 		42B4FBC81BD651CC009D2C0E /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B4FBC71BD651CC009D2C0E /* MasterViewController.swift */; };
 		42B4FBCA1BD651CC009D2C0E /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B4FBC91BD651CC009D2C0E /* DetailViewController.swift */; };
@@ -25,6 +26,8 @@
 		429307301BDD1C54000BD4FB /* SyncMLGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncMLGenerator.swift; sourceTree = "<group>"; };
 		429307311BDD1C54000BD4FB /* SyncMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncMLParser.swift; sourceTree = "<group>"; };
 		429307361BDD1C89000BD4FB /* TGCFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGCFileManager.swift; sourceTree = "<group>"; };
+		429307381BDD1E5D000BD4FB /* DirectoryWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryWatcher.h; sourceTree = "<group>"; };
+		429307391BDD1E5D000BD4FB /* DirectoryWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DirectoryWatcher.m; sourceTree = "<group>"; };
 		42B4FBC21BD651CC009D2C0E /* SyncMLLab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SyncMLLab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		42B4FBC51BD651CC009D2C0E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42B4FBC71BD651CC009D2C0E /* MasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewController.swift; sourceTree = "<group>"; };
@@ -78,6 +81,8 @@
 		429307341BDD1C5E000BD4FB /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				429307381BDD1E5D000BD4FB /* DirectoryWatcher.h */,
+				429307391BDD1E5D000BD4FB /* DirectoryWatcher.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -253,6 +258,7 @@
 				429307321BDD1C54000BD4FB /* SyncMLGenerator.swift in Sources */,
 				42B4FBC81BD651CC009D2C0E /* MasterViewController.swift in Sources */,
 				429307371BDD1C89000BD4FB /* TGCFileManager.swift in Sources */,
+				4293073A1BDD1E5D000BD4FB /* DirectoryWatcher.m in Sources */,
 				42B4FBC61BD651CC009D2C0E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
