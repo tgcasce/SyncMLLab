@@ -10,7 +10,7 @@ import UIKit
 
 class MasterViewController: UITableViewController {
 
-    weak var fileWatcher: DirectoryWatcher! = nil
+    var fileWatcher: DirectoryWatcher! = nil
     var detailViewController: DetailViewController? = nil
     var objects = [AnyObject]()
 
