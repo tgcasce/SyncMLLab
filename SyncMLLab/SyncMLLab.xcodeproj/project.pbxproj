@@ -7,21 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		425497511BDA65BB004E20E2 /* SyncMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425497501BDA65BB004E20E2 /* SyncMLParser.swift */; };
+		429307321BDD1C54000BD4FB /* SyncMLGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429307301BDD1C54000BD4FB /* SyncMLGenerator.swift */; };
+		429307331BDD1C54000BD4FB /* SyncMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429307311BDD1C54000BD4FB /* SyncMLParser.swift */; };
+		429307371BDD1C89000BD4FB /* TGCFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429307361BDD1C89000BD4FB /* TGCFileManager.swift */; };
 		42B4FBC61BD651CC009D2C0E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B4FBC51BD651CC009D2C0E /* AppDelegate.swift */; };
 		42B4FBC81BD651CC009D2C0E /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B4FBC71BD651CC009D2C0E /* MasterViewController.swift */; };
 		42B4FBCA1BD651CC009D2C0E /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B4FBC91BD651CC009D2C0E /* DetailViewController.swift */; };
 		42B4FBCD1BD651CC009D2C0E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 42B4FBCB1BD651CC009D2C0E /* Main.storyboard */; };
 		42B4FBCF1BD651CC009D2C0E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42B4FBCE1BD651CC009D2C0E /* Assets.xcassets */; };
 		42B4FBD21BD651CC009D2C0E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 42B4FBD01BD651CC009D2C0E /* LaunchScreen.storyboard */; };
-		42BD69871BD9F4EA0019ADF3 /* SyncMLGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42BD69861BD9F4EA0019ADF3 /* SyncMLGenerator.swift */; };
 		B4A42B652D73DEAD2635B320 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3550204524468E8332D55A9 /* Pods.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2FAEB422A8632D2619040BBD /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		421056A81BD80382002011BB /* SyncMLLab-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SyncMLLab-Bridging-Header.h"; sourceTree = "<group>"; };
-		425497501BDA65BB004E20E2 /* SyncMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncMLParser.swift; sourceTree = "<group>"; };
+		429307301BDD1C54000BD4FB /* SyncMLGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncMLGenerator.swift; sourceTree = "<group>"; };
+		429307311BDD1C54000BD4FB /* SyncMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncMLParser.swift; sourceTree = "<group>"; };
+		429307361BDD1C89000BD4FB /* TGCFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGCFileManager.swift; sourceTree = "<group>"; };
 		42B4FBC21BD651CC009D2C0E /* SyncMLLab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SyncMLLab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		42B4FBC51BD651CC009D2C0E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42B4FBC71BD651CC009D2C0E /* MasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewController.swift; sourceTree = "<group>"; };
@@ -30,7 +33,6 @@
 		42B4FBCE1BD651CC009D2C0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		42B4FBD11BD651CC009D2C0E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		42B4FBD31BD651CC009D2C0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		42BD69861BD9F4EA0019ADF3 /* SyncMLGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncMLGenerator.swift; sourceTree = "<group>"; };
 		BF0AF9F1AB2563BC534C87A5 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		C3550204524468E8332D55A9 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -64,6 +66,30 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		4293072F1BDD1C54000BD4FB /* SyncML */ = {
+			isa = PBXGroup;
+			children = (
+				429307301BDD1C54000BD4FB /* SyncMLGenerator.swift */,
+				429307311BDD1C54000BD4FB /* SyncMLParser.swift */,
+			);
+			path = SyncML;
+			sourceTree = "<group>";
+		};
+		429307341BDD1C5E000BD4FB /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		429307351BDD1C65000BD4FB /* FileManager */ = {
+			isa = PBXGroup;
+			children = (
+				429307361BDD1C89000BD4FB /* TGCFileManager.swift */,
+			);
+			path = FileManager;
+			sourceTree = "<group>";
+		};
 		42B4FBB91BD651CC009D2C0E = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +111,9 @@
 		42B4FBC41BD651CC009D2C0E /* SyncMLLab */ = {
 			isa = PBXGroup;
 			children = (
+				429307341BDD1C5E000BD4FB /* Utils */,
+				429307351BDD1C65000BD4FB /* FileManager */,
+				4293072F1BDD1C54000BD4FB /* SyncML */,
 				42B4FBC51BD651CC009D2C0E /* AppDelegate.swift */,
 				42B4FBC71BD651CC009D2C0E /* MasterViewController.swift */,
 				42B4FBC91BD651CC009D2C0E /* DetailViewController.swift */,
@@ -93,8 +122,6 @@
 				42B4FBD01BD651CC009D2C0E /* LaunchScreen.storyboard */,
 				42B4FBD31BD651CC009D2C0E /* Info.plist */,
 				421056A81BD80382002011BB /* SyncMLLab-Bridging-Header.h */,
-				42BD69861BD9F4EA0019ADF3 /* SyncMLGenerator.swift */,
-				425497501BDA65BB004E20E2 /* SyncMLParser.swift */,
 			);
 			path = SyncMLLab;
 			sourceTree = "<group>";
@@ -221,10 +248,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				425497511BDA65BB004E20E2 /* SyncMLParser.swift in Sources */,
+				429307331BDD1C54000BD4FB /* SyncMLParser.swift in Sources */,
 				42B4FBCA1BD651CC009D2C0E /* DetailViewController.swift in Sources */,
-				42BD69871BD9F4EA0019ADF3 /* SyncMLGenerator.swift in Sources */,
+				429307321BDD1C54000BD4FB /* SyncMLGenerator.swift in Sources */,
 				42B4FBC81BD651CC009D2C0E /* MasterViewController.swift in Sources */,
+				429307371BDD1C89000BD4FB /* TGCFileManager.swift in Sources */,
 				42B4FBC61BD651CC009D2C0E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -273,6 +301,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -287,6 +316,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -317,6 +347,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -325,6 +356,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
@@ -338,6 +370,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				HEADER_SEARCH_PATHS = "\"$(SDKROOT)/usr/include/libxml2\"";
 				INFOPLIST_FILE = SyncMLLab/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -345,6 +378,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "SyncMLLab/SyncMLLab-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Pods/Headers/**";
 			};
 			name = Debug;
 		};
@@ -354,12 +388,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				HEADER_SEARCH_PATHS = "\"$(SDKROOT)/usr/include/libxml2\"";
 				INFOPLIST_FILE = SyncMLLab/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tgcasce.SyncMLLab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "SyncMLLab/SyncMLLab-Bridging-Header.h";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Pods/Headers/**";
 			};
 			name = Release;
 		};
