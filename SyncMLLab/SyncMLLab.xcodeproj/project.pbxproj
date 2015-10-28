@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4278FEC11BE0F70800A2546C /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4278FEC01BE0F70800A2546C /* Constant.swift */; };
 		429307321BDD1C54000BD4FB /* SyncMLGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429307301BDD1C54000BD4FB /* SyncMLGenerator.swift */; };
 		429307331BDD1C54000BD4FB /* SyncMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429307311BDD1C54000BD4FB /* SyncMLParser.swift */; };
 		429307371BDD1C89000BD4FB /* TGCFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429307361BDD1C89000BD4FB /* TGCFileManager.swift */; };
@@ -23,6 +24,7 @@
 /* Begin PBXFileReference section */
 		2FAEB422A8632D2619040BBD /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		421056A81BD80382002011BB /* SyncMLLab-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SyncMLLab-Bridging-Header.h"; sourceTree = "<group>"; };
+		4278FEC01BE0F70800A2546C /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
 		429307301BDD1C54000BD4FB /* SyncMLGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncMLGenerator.swift; sourceTree = "<group>"; };
 		429307311BDD1C54000BD4FB /* SyncMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncMLParser.swift; sourceTree = "<group>"; };
 		429307361BDD1C89000BD4FB /* TGCFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TGCFileManager.swift; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 			children = (
 				429307381BDD1E5D000BD4FB /* DirectoryWatcher.h */,
 				429307391BDD1E5D000BD4FB /* DirectoryWatcher.m */,
+				4278FEC01BE0F70800A2546C /* Constant.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -256,6 +259,7 @@
 				429307331BDD1C54000BD4FB /* SyncMLParser.swift in Sources */,
 				42B4FBCA1BD651CC009D2C0E /* DetailViewController.swift in Sources */,
 				429307321BDD1C54000BD4FB /* SyncMLGenerator.swift in Sources */,
+				4278FEC11BE0F70800A2546C /* Constant.swift in Sources */,
 				42B4FBC81BD651CC009D2C0E /* MasterViewController.swift in Sources */,
 				429307371BDD1C89000BD4FB /* TGCFileManager.swift in Sources */,
 				4293073A1BDD1E5D000BD4FB /* DirectoryWatcher.m in Sources */,

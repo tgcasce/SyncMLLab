@@ -42,55 +42,15 @@ class DetailViewController: UIViewController {
 
     @IBAction func request(sender: AnyObject) {
         
-        let XML = SyncMLGenerator(messageNumber: 1)
-        XML.addStatusElementForSyncBody(1, cmdRef: 0, cmd: MessageContainerElements.SyncHdr.rawValue, targetRef: "unknow", sourceRef: "unknow", data: "200", nextSyncAnchor: NSDate().description)
-        XML.addAlertElementForSyncBody("211", target: "http://localhost/~maulyn/SyncServer/present_xml.php", source: "file.file", lastSyncAnchor: NSDate().dateByAddingTimeInterval(-10000).description)
-        XML.addSyncElementForSyncBody("", source: "", lastSyncAnchor: "2015-10-23")
-        XML.addElementForSyncCommand("Add")
-        let xmlPath = XML.saveAsXMLFile()
+        TGCFileManager.defaultManager.scanCurrentPath()
+        for URL in TGCFileManager.defaultManager.currentDirectories {
+            print(TGCFileManager.defaultManager.getNameBy(URL))
+        }
         
-        print(xmlPath)
-        
-        let postRequestURL = NSURL(string: "http://localhost/~maulyn/SyncServer/transfer_xml.php")!
-        let formRequest = ASIFormDataRequest.requestWithURL(postRequestURL) as! ASIFormDataRequest
-        formRequest.setFile(xmlPath, forKey: "file")
-        formRequest.delegate = self
-        formRequest.startAsynchronous()
+        TGCFileManager.defaultManager.uploadFileInBackupArea()
+
     }
 
 }
 
-extension DetailViewController: ASIHTTPRequestDelegate {
-    func requestStarted(request: ASIHTTPRequest!) {
-        print("started.")
-    }
 
-    func request(request: ASIHTTPRequest!, didReceiveResponseHeaders responseHeaders: [NSObject : AnyObject]!) {
-        print("request:\(request.requestHeaders)")
-        print("status code: \(request.responseStatusCode), response:\(responseHeaders as NSDictionary)")
-    }
-    
-    func request(request: ASIHTTPRequest!, willRedirectToURL newURL: NSURL!) {
-        print("newURL:\(newURL)")
-    }
-    
-    func requestFinished(request: ASIHTTPRequest!) {
-        print("finished.")
-    }
-    
-    func requestFailed(request: ASIHTTPRequest!) {
-        print("failed.")
-    }
-    
-    func requestRedirected(request: ASIHTTPRequest!) {
-        print("redirected.")
-    }
-    
-    func request(request: ASIHTTPRequest!, didReceiveData data: NSData!) {
-        let parser = SyncMLParser(XMLdata: data)
-        print(parser?.syncHdrStatus)
-        print(parser?.alertStatus)
-        print(parser?.syncStatus)
-        print(parser?.commandStatus)
-    }
-}
