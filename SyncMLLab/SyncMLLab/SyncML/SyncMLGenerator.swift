@@ -148,7 +148,7 @@ extension SyncMLGenerator {
         return XML
     }
     
-    private class func generateOperationCommandWith(syncType type: Int, anchor: String, fileTarget: String, fileSource: String) -> SyncMLGenerator {
+    class func generateOperationCommandWith(syncType type: Int, anchor: String, fileTarget: String, fileSource: String) -> SyncMLGenerator {
         let XML = SyncMLGenerator(messageNumber: 1)
         XML.addAlertElementForSyncBody(String(type), target: mainHost+transferHandlerFile, source: fileSource, lastSyncAnchor: anchor)
         XML.addSyncElementForSyncBody(fileTarget, source: fileSource, lastSyncAnchor: anchor)

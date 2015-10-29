@@ -41,7 +41,7 @@ class SyncMLParser: NSObject {
     var syncStatus: [String : String]? {
         for status in statuses! {
             if status["Cmd"].stringValue == "Sync" {
-                return ["CmdID":status["CmdID"].stringValue, "Data":status["Data"].stringValue]
+                return ["CmdID":status["CmdID"].stringValue, "Data":status["Data"].stringValue, "SourceRef":status["SourceRef"].stringValue]
             }
         }
         return nil

@@ -42,13 +42,15 @@ class DetailViewController: UIViewController {
 
     @IBAction func request(sender: AnyObject) {
         
-        TGCFileManager.defaultManager.scanCurrentPath()
-        for URL in TGCFileManager.defaultManager.currentDirectories {
-            print(TGCFileManager.defaultManager.getNameBy(URL))
-        }
-        
-        TGCFileManager.defaultManager.uploadFileInBackupArea()
+//        TGCFileManager.defaultManager.scanCurrentPath()
+//        for URL in TGCFileManager.defaultManager.currentDirectories {
+//            print(TGCFileManager.defaultManager.getNameBy(URL))
+//        }
+//        TGCFileManager.defaultManager.uploadFileInBackupAreaWith(filePath: NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true).last!+"/transfer_xml.php")
 
+//        TGCFileManager.defaultManager.putFileFromBackupToSyncArea(filePath: NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true).last!+"/transfer_xml.php")
+        
+//        TGCFileManager.defaultManager.deleteFile(withPath: NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true).last!+"/transfer_xml.php")
     }
 
 }
