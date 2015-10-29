@@ -8,27 +8,10 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
+class DetailViewController: UITableViewController {
 
-    @IBOutlet weak var detailDescriptionLabel: UILabel!
-
-
-    var detailItem: AnyObject? {
-        didSet {
-            // Update the view.
-            self.configureView()
-        }
-    }
-
-    func configureView() {
-        // Update the user interface for the detail item.
-        if let detail = self.detailItem {
-            if let label = self.detailDescriptionLabel {
-                label.text = detail.description
-            }
-        }
-    }
-
+    var currentPath: String = TGCFileManager.documentDirectory
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -40,7 +23,37 @@ class DetailViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    @IBAction func request(sender: AnyObject) {
+    func configureView() {
+        
+    }
+    
+    
+    //MARK: - UITableViewDataSource, UITableViewDelegate
+    
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 2
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("FileCell", forIndexPath: indexPath)
+        
+        return cell
+    }
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return "文件夹"
+        } else {
+            return "文件"
+        }
+    }
+    
+    
+    func request(sender: AnyObject) {
         
 //        TGCFileManager.defaultManager.scanCurrentPath()
 //        for URL in TGCFileManager.defaultManager.currentDirectories {

@@ -124,7 +124,7 @@ class SyncMLGenerator: NSObject {
     }
 }
 
-//MARK: File Transfer Command Usage
+//MARK: - File Transfer Command Usage
 
 extension SyncMLGenerator {
     class func generateAddCommandWith(syncType type: Int, anchor: String, fileTarget: String, fileSource: String) -> SyncMLGenerator {
