@@ -54,7 +54,7 @@ class MasterViewController: UITableViewController {
 
 extension MasterViewController: DirectoryWatcherDelegate {
     func directoryDidChange(folderWatcher: DirectoryWatcher!) {
-        
+        NSNotificationCenter.defaultCenter().postNotificationName(DirectoryDidChangeNotification, object: nil)
     }
 }
 

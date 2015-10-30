@@ -18,3 +18,5 @@ let syncArea = "SyncArea/"
 let backupArea = "BackupArea/"
 
 let syncStatusFile = "SyncStatus.plist"
+
+let DirectoryDidChangeNotification = "directoryDidChangeNotification"
