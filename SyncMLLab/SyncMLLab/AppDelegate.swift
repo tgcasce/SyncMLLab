@@ -31,10 +31,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     func reachabilityChanged(notification: NSNotification) {
         let reachability = notification.object as! Reachability
         if reachability.isReachable() == false {
-            UIAlertController(title: "网络不可用", message: "请检查您的网络连接！", preferredStyle: UIAlertControllerStyle.Alert).addAction(UIAlertAction(title: "好的", style: UIAlertActionStyle.Default, handler: nil))
+            let alertController = UIAlertController(title: "网络不可用", message: "请检查您的网络连接！", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "好的", style: UIAlertActionStyle.Default, handler: nil))
+            self.window?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
+            return;
         }
         if reachability.isReachableViaWiFi() == false {
-            UIAlertController(title: "当前是非Wi-Fi环境", message: "使用上传功能将耗费大量流量！", preferredStyle: UIAlertControllerStyle.Alert).addAction(UIAlertAction(title: "好的", style: UIAlertActionStyle.Default, handler: nil))
+            let alertController = UIAlertController(title: "当前是非Wi-Fi环境", message: "使用上传功能将耗费大量流量！", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "好的", style: UIAlertActionStyle.Default, handler: nil))
+            self.window?.rootViewController?.presentViewController(alertController, animated: true, completion: nil)
         }
     }
     

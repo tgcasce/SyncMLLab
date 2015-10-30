@@ -109,23 +109,22 @@ class TGCFileManager: NSObject {
     }
     
     func uploadDocumentInSyncAreaWith(documentPath path: String) {
+        self.fileInformations[path] = String(FileSyncStatus.Synced.rawValue)
         let fileManager = NSFileManager.defaultManager()
-        if let fileEnum = fileManager.enumeratorAtURL(NSURL(string: path)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles], errorHandler: nil) {
-            for fileURL in fileEnum {
-                do {
-                    if self.fileInformations[(fileURL as! NSURL).path!] == nil {
-                        self.fileInformations[(fileURL as! NSURL).path!] = String(FileSyncStatus.Unsynced.rawValue)
-                    }
-                    var isDirectory: AnyObject?
-                    try (fileURL as! NSURL).getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
-                    if let isDirectoryBool = isDirectory as? NSNumber {
-                        if isDirectoryBool.boolValue == false {
-                            self.commonSyncWith(syncCommand: ProtocolCommandElements.Add, filePath: (fileURL as! NSURL).path!)
-                        }
-                    }
-                } catch {
-                    print(error)
+        for fileURL in fileManager.enumeratorAtURL(NSURL(string: path)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles], errorHandler: nil)! {
+            do {
+                if self.fileInformations[(fileURL as! NSURL).path!] == nil {
+                    self.fileInformations[(fileURL as! NSURL).path!] = String(FileSyncStatus.Synced.rawValue)
                 }
+                var isDirectory: AnyObject?
+                try (fileURL as! NSURL).getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
+                if let isDirectoryBool = isDirectory as? NSNumber {
+                    if isDirectoryBool.boolValue == false {
+                        self.commonSyncWith(syncCommand: ProtocolCommandElements.Add, filePath: (fileURL as! NSURL).path!)
+                    }
+                }
+            } catch {
+                print(error)
             }
         }
     }
@@ -156,23 +155,22 @@ class TGCFileManager: NSObject {
     }
     
     func uploadDocumentInBackupAreaWith(filePath path: String) {
+        self.fileInformations[path] = String(FileSyncStatus.Backuped.rawValue)
         let fileManager = NSFileManager.defaultManager()
-        if let fileEnum = fileManager.enumeratorAtURL(NSURL(string: path)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles], errorHandler: nil) {
-            for fileURL in fileEnum {
-                do {
-                    if self.fileInformations[(fileURL as! NSURL).path!] == nil {
-                        self.fileInformations[(fileURL as! NSURL).path!] = String(FileSyncStatus.Unsynced.rawValue)
-                    }
-                    var isDirectory: AnyObject?
-                    try (fileURL as! NSURL).getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
-                    if let isDirectoryBool = isDirectory as? NSNumber {
-                        if isDirectoryBool.boolValue == false {
-                            self.uploadFileInBackupAreaWith(filePath: (fileURL as! NSURL).path!)
-                        }
-                    }
-                } catch {
-                    print(error)
+        for fileURL in fileManager.enumeratorAtURL(NSURL(string: path)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles], errorHandler: nil)! {
+            do {
+                if self.fileInformations[(fileURL as! NSURL).path!] == nil {
+                    self.fileInformations[(fileURL as! NSURL).path!] = String(FileSyncStatus.Backuped.rawValue)
                 }
+                var isDirectory: AnyObject?
+                try (fileURL as! NSURL).getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
+                if let isDirectoryBool = isDirectory as? NSNumber {
+                    if isDirectoryBool.boolValue == false {
+                        self.uploadFileInBackupAreaWith(filePath: (fileURL as! NSURL).path!)
+                    }
+                }
+            } catch {
+                print(error)
             }
         }
     }
@@ -269,12 +267,12 @@ extension TGCFileManager: ASIHTTPRequestDelegate {
     
     func requestFinished(request: ASIHTTPRequest!) {
         print("finished.")
-        guard let userInfo = request.userInfo else {
-            if self.transferQueue.operationCount == 0 {
-                if self.transferCompletionHandler != nil {
-                    self.transferCompletionHandler!()
-                }
+        if self.transferQueue.operationCount == 0 {
+            if self.transferCompletionHandler != nil {
+                self.transferCompletionHandler!()
             }
+        }
+        guard let userInfo = request.userInfo else {
             return;
         }
         if (userInfo["SyncType"] as! NSNumber).integerValue == AlertCommandTypes.TwoWay.rawValue {
