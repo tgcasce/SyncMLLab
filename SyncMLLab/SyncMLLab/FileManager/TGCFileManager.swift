@@ -8,6 +8,12 @@
 
 import UIKit
 
+enum FileSyncStatus: Int {
+    case Unsynced = 0
+    case Backuped = 1
+    case Synced = 2
+}
+
 class TGCFileManager: NSObject {
 
     static var defaultManager: TGCFileManager {
@@ -22,7 +28,7 @@ class TGCFileManager: NSObject {
     
     let transferQueue = NSOperationQueue()
     let scanFileQueue = NSOperationQueue()
-    var currentPath: String = NSFileManager.defaultManager().URLsForDirectory(NSSearchPathDirectory.DocumentDirectory, inDomains: NSSearchPathDomainMask.UserDomainMask).last!.absoluteString
+    var currentPath: String = TGCFileManager.documentDirectory
     var currentDirectories = [NSURL]()
     var currentFiles = [NSURL]()
     lazy var fileInformations: NSMutableDictionary! = NSMutableDictionary(contentsOfURL: NSURL(string: syncStatusFile, relativeToURL: TGCFileManager.libraryDirectory)!)
@@ -37,47 +43,44 @@ class TGCFileManager: NSObject {
             if self.currentPath != path {
                 self.currentPath = path
             }
-            
             self.currentDirectories.removeAll()
             self.currentFiles.removeAll()
             
-            let fileManager = NSFileManager.defaultManager()
-            if let fileEnum = fileManager.enumeratorAtURL(NSURL(string: path)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles, NSDirectoryEnumerationOptions.SkipsSubdirectoryDescendants], errorHandler: nil) {
-                if self.fileInformations == nil {
-                    self.fileInformations = NSMutableDictionary()
-                }
-                //删除不存在的文件的记录
-                for key in self.fileInformations.allKeys {
-                    if (key as! String).hasPrefix(path) {
-                        var count = 0
-                        for fileURL in fileEnum {
-                            if key as! String == (fileURL as! NSURL).path! {
-                                count++
-                                break;
-                            }
-                        }
-                        if count == 0 {
-                            self.fileInformations.removeObjectForKey(key)
+            if self.fileInformations == nil {
+                self.fileInformations = NSMutableDictionary()
+            }
+            
+            //删除不存在的文件的记录
+            for key in self.fileInformations.allKeys {
+                if (key as! String).hasPrefix(path) {
+                    var count = 0
+                    for fileURL in self.enumeratorSkipAllAtPath(path) {
+                        if key as! String == (fileURL as! NSURL).path! {
+                            count++
+                            break;
                         }
                     }
-                }
-                for fileURL in fileEnum {
-                    do {
-                        if self.fileInformations[(fileURL as! NSURL).path!] == nil {
-                            self.fileInformations[(fileURL as! NSURL).path!] = "0"
-                        }
-                        var isDirectory: AnyObject?
-                        try (fileURL as! NSURL).getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
-                        if let isDirectoryBool = isDirectory as? NSNumber {
-                            if isDirectoryBool.boolValue == true {
-                                self.currentDirectories.append(fileURL as! NSURL)
-                            } else {
-                                self.currentFiles.append(fileURL as! NSURL)
-                            }
-                        }
-                    } catch {
-                        print(error)
+                    if count == 0 {
+                        self.fileInformations.removeObjectForKey(key)
                     }
+                }
+            }
+            for fileURL in self.enumeratorSkipAllAtPath(path) {
+                do {
+                    if self.fileInformations[(fileURL as! NSURL).path!] == nil {
+                        self.fileInformations[(fileURL as! NSURL).path!] = String(FileSyncStatus.Unsynced.rawValue)
+                    }
+                    var isDirectory: AnyObject?
+                    try (fileURL as! NSURL).getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
+                    if let isDirectoryBool = isDirectory as? NSNumber {
+                        if isDirectoryBool.boolValue == true {
+                            self.currentDirectories.append(fileURL as! NSURL)
+                        } else {
+                            self.currentFiles.append(fileURL as! NSURL)
+                        }
+                    }
+                } catch {
+                    print(error)
                 }
             }
             NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
@@ -86,6 +89,10 @@ class TGCFileManager: NSObject {
                 }
             })
         }
+    }
+    
+    private func enumeratorSkipAllAtPath(path: String) -> NSDirectoryEnumerator {
+        return NSFileManager.defaultManager().enumeratorAtURL(NSURL(string: path)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles, NSDirectoryEnumerationOptions.SkipsSubdirectoryDescendants], errorHandler: nil)!
     }
     
     func getNameBy(URL: NSURL) -> String? {
@@ -107,7 +114,7 @@ class TGCFileManager: NSObject {
             for fileURL in fileEnum {
                 do {
                     if self.fileInformations[(fileURL as! NSURL).path!] == nil {
-                        self.fileInformations[(fileURL as! NSURL).path!] = "0"
+                        self.fileInformations[(fileURL as! NSURL).path!] = String(FileSyncStatus.Unsynced.rawValue)
                     }
                     var isDirectory: AnyObject?
                     try (fileURL as! NSURL).getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
@@ -144,7 +151,7 @@ class TGCFileManager: NSObject {
                 print(error)
             }
         } else {
-            self.fileInformations[filePath] = "2"
+            self.fileInformations[filePath] = String(FileSyncStatus.Synced.rawValue)
         }
     }
     
@@ -154,7 +161,7 @@ class TGCFileManager: NSObject {
             for fileURL in fileEnum {
                 do {
                     if self.fileInformations[(fileURL as! NSURL).path!] == nil {
-                        self.fileInformations[(fileURL as! NSURL).path!] = "0"
+                        self.fileInformations[(fileURL as! NSURL).path!] = String(FileSyncStatus.Unsynced.rawValue)
                     }
                     var isDirectory: AnyObject?
                     try (fileURL as! NSURL).getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
@@ -174,7 +181,7 @@ class TGCFileManager: NSObject {
         let uploadXML = SyncMLGenerator.generateAddCommandWith(syncType: AlertCommandTypes.BackupSync.rawValue, anchor: NSDate().description, fileTarget: mainHost+backupArea, fileSource: path)
         let xmlPath = uploadXML.saveAsXMLFile(NSTemporaryDirectory())
         self.uploadFileRequestWith(transferHandlerFile, filePath: xmlPath!, userInfo: ["SyncType" : NSNumber(integer: AlertCommandTypes.BackupSync.rawValue)])
-        self.fileInformations[path] = "1"
+        self.fileInformations[path] = String(FileSyncStatus.Backuped.rawValue)
     }
     
     private func uploadFileRequestWith(serverFile: String, filePath path: String, userInfo: [String : AnyObject]?) {
@@ -202,7 +209,7 @@ class TGCFileManager: NSObject {
         let putXML = SyncMLGenerator.generatePutCommandWith(syncType: AlertCommandTypes.BackupSync.rawValue, anchor: NSDate().description, fileTarget: mainHost+syncArea, fileSource: relativePath.relativePath)
         let xmlPath = putXML.saveAsXMLFile(NSTemporaryDirectory())
         self.uploadFileRequestWith(transferHandlerFile, filePath: xmlPath!, userInfo: ["SyncType" : NSNumber(integer: AlertCommandTypes.BackupSync.rawValue)])
-        self.fileInformations[path] = "2"
+        self.fileInformations[path] = String(FileSyncStatus.Synced.rawValue)
         do {
             try NSFileManager.defaultManager().moveItemAtPath(path, toPath: TGCFileManager.documentDirectory+"/"+relativePath.fileName)
         } catch {

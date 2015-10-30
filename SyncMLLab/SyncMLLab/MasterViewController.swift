@@ -37,19 +37,15 @@ class MasterViewController: UITableViewController {
     // MARK: - Segues
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if let indexPath = self.tableView.indexPathForSelectedRow {
-            let cell = self.tableView.cellForRowAtIndexPath(indexPath)!
-            let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
-            controller.title = cell.textLabel?.text
-            controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
-            controller.navigationItem.leftItemsSupplementBackButton = true
-            if segue.identifier == "showBackupArea" {
-                
-            } else if segue.identifier == "showSyncArea" {
-                
-            } else if segue.identifier == "showLocalArea" {
-                
-            }
+        let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
+        controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+        controller.navigationItem.leftItemsSupplementBackButton = true
+        if segue.identifier == "showBackupArea" {
+            controller.areaType = AreaType.BackupArea
+        } else if segue.identifier == "showSyncArea" {
+            controller.areaType = AreaType.SyncArea
+        } else if segue.identifier == "showLocalArea" {
+            
         }
     }
 
