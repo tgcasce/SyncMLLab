@@ -55,7 +55,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="567" height="64"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="久驻区" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Arm-wq-HPj">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="备份区" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Arm-wq-HPj">
                                                     <rect key="frame" x="15" y="0.0" width="550" height="64"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <animations/>
@@ -187,6 +187,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="ltV-8P-iGr"/>
+        <segue reference="c76-jF-Wbc"/>
     </inferredMetricsTieBreakers>
 </document>

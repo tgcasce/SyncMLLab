@@ -20,9 +20,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let navigationController = splitViewController.viewControllers[splitViewController.viewControllers.count-1] as! UINavigationController
         navigationController.topViewController!.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
         splitViewController.delegate = self
+        
+        let reachability = Reachability(hostName: mainHost)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityChanged:", name: kReachabilityChangedNotification, object: nil)
+        reachability.startNotifier()
+        
         return true
     }
 
+    func reachabilityChanged(notification: NSNotification) {
+        let reachability = notification.object as! Reachability
+        if reachability.isReachable() == false {
+            UIAlertController(title: "网络不可用", message: "请检查您的网络连接！", preferredStyle: UIAlertControllerStyle.Alert).addAction(UIAlertAction(title: "好的", style: UIAlertActionStyle.Default, handler: nil))
+        }
+        if reachability.isReachableViaWiFi() == false {
+            UIAlertController(title: "当前是非Wi-Fi环境", message: "使用上传功能将耗费大量流量！", preferredStyle: UIAlertControllerStyle.Alert).addAction(UIAlertAction(title: "好的", style: UIAlertActionStyle.Default, handler: nil))
+        }
+    }
+    
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.

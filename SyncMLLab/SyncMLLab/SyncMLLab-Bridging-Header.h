@@ -3,5 +3,6 @@
 //
 
 #import "DirectoryWatcher.h"
+#import "Reachability.h"
 #import "ASIHTTPRequest.h"
 #import "ASIFormDataRequest.h"
