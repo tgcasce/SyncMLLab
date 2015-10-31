@@ -17,7 +17,7 @@ enum AreaType: Int {
 class DetailViewController: UITableViewController {
 
     var shouldPerformSegue = false
-    var currentPath: String = TGCFileManager.documentDirectory
+    var currentPath: String = TGCFileManager.documentDirectory+"/"
     var areaType = AreaType.LocalArea
     var currentDirectories = [NSURL]()
     var currentFiles = [NSURL]()
@@ -26,7 +26,6 @@ class DetailViewController: UITableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.title = (self.currentPath as NSString).lastPathComponent
-        self.configureView()
         TGCFileManager.defaultManager.transferCompletionHandler = { () -> Void in
             self.currentDirectories.removeAll()
             self.currentFiles.removeAll()
@@ -48,14 +47,20 @@ class DetailViewController: UITableViewController {
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        self.configureView()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "configureView", name: DirectoryDidChangeNotification, object: nil)
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewWillDisappear(animated: Bool) {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: DirectoryDidChangeNotification, object: nil)
-        super.viewDidDisappear(animated)
+        if self.currentPath.hasSuffix("Documents/") {
+            TGCFileManager.defaultManager.fileInformations.writeToURL(NSURL(string: syncStatusFile, relativeToURL: TGCFileManager.libraryDirectory)!, atomically: true)
+        } else {
+            TGCFileManager.defaultManager.fileInformations.writeToFile(self.currentPath+syncStatusFile, atomically: true)
+        }
+        super.viewWillDisappear(animated)
     }
 
     override func didReceiveMemoryWarning() {
@@ -66,7 +71,7 @@ class DetailViewController: UITableViewController {
     func configureView() {
         self.currentDirectories.removeAll()
         self.currentFiles.removeAll()
-        TGCFileManager.defaultManager.scanPath(currentPath) { () -> Void in
+        TGCFileManager.defaultManager.scanPath(inArea: self.areaType, path: currentPath) { () -> Void in
             for directoryURL in TGCFileManager.defaultManager.currentDirectories {
                 if let syncStatus = TGCFileManager.defaultManager.fileInformations[directoryURL.path!] {
                     if syncStatus as! String == String(self.areaType.rawValue) {
@@ -151,15 +156,19 @@ class DetailViewController: UITableViewController {
         case .LocalArea:
             if indexPath.section == 0 {
                 alertController.addAction(openAction)
-                let uploadAction = UIAlertAction(title: "上传", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
-                    TGCFileManager.defaultManager.uploadDocumentInBackupAreaWith(filePath: operationPath)
+            }
+            if self.currentPath.hasSuffix("Documents/") {
+                if indexPath.section == 0 {
+                    let uploadAction = UIAlertAction(title: "上传", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
+                        TGCFileManager.defaultManager.uploadDocumentInBackupAreaWith(filePath: operationPath)
+                    }
+                    alertController.addAction(uploadAction)
+                } else {
+                    let uploadAction = UIAlertAction(title: "上传", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
+                        TGCFileManager.defaultManager.uploadFileInBackupAreaWith(filePath: operationPath, isUpdateStatus: true)
+                    }
+                    alertController.addAction(uploadAction)
                 }
-                alertController.addAction(uploadAction)
-            } else {
-                let uploadAction = UIAlertAction(title: "上传", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
-                    TGCFileManager.defaultManager.uploadFileInBackupAreaWith(filePath: operationPath)
-                }
-                alertController.addAction(uploadAction)
             }
             alertController.addAction(deleteAction)
         case .BackupArea:
@@ -180,16 +189,18 @@ class DetailViewController: UITableViewController {
                 alertController.addAction(uploadAction)
             } else {
                 let uploadAction = UIAlertAction(title: "同步", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
-                    TGCFileManager.defaultManager.commonSyncWith(syncCommand: ProtocolCommandElements.Add, filePath: operationPath)
+                    TGCFileManager.defaultManager.commonSyncWith(syncCommand: ProtocolCommandElements.Add, filePath: operationPath, isUpdateStatus: true)
                 }
                 alertController.addAction(uploadAction)
-                let moveAction = UIAlertAction(title: "移到久驻区", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
-                    TGCFileManager.defaultManager.uploadFileInBackupAreaWith(filePath: operationPath)
+                if self.currentPath.hasSuffix("Documents/") {
+                    let moveAction = UIAlertAction(title: "移到备份区", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
+                        TGCFileManager.defaultManager.uploadFileInBackupAreaWith(filePath: operationPath, isUpdateStatus: true)
+                    }
+                    alertController.addAction(moveAction)                    
                 }
-                alertController.addAction(moveAction)
             }
             let deleteSyncAreaAction = UIAlertAction(title: "删除", style: UIAlertActionStyle.Destructive) { (alertAction) -> Void in
-                TGCFileManager.defaultManager.commonSyncWith(syncCommand: ProtocolCommandElements.Delete, filePath: operationPath)
+                TGCFileManager.defaultManager.commonSyncWith(syncCommand: ProtocolCommandElements.Delete, filePath: operationPath, isUpdateStatus: true)
             }
             alertController.addAction(deleteSyncAreaAction)
         }
@@ -208,7 +219,7 @@ class DetailViewController: UITableViewController {
                 self.shouldPerformSegue = false
                 let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
                 controller.areaType = self.areaType
-                controller.currentPath = self.currentDirectories[indexPath.row].path!
+                controller.currentPath = self.currentDirectories[indexPath.row].path!+"/"
             }
         }
     }

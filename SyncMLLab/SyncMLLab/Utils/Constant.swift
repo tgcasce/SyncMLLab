@@ -17,6 +17,6 @@ let backupUploadHandlerFile = "backup_upload.php"
 let syncArea = "SyncArea/"
 let backupArea = "BackupArea/"
 
-let syncStatusFile = "SyncStatus.plist"
+let syncStatusFile = ".SyncStatus"
 
 let DirectoryDidChangeNotification = "directoryDidChangeNotification"

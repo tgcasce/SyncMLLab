@@ -31,20 +31,23 @@ class TGCFileManager: NSObject {
     var currentPath: String = TGCFileManager.documentDirectory
     var currentDirectories = [NSURL]()
     var currentFiles = [NSURL]()
-    lazy var fileInformations: NSMutableDictionary! = NSMutableDictionary(contentsOfURL: NSURL(string: syncStatusFile, relativeToURL: TGCFileManager.libraryDirectory)!)
+    private var responseXML: SyncMLParser?
+    var fileInformations: NSMutableDictionary!
     var transferCompletionHandler: (() -> Void)? //called when 'transferQueue' is empty
     
-    func scanCurrentPath(completion: (() -> Void)?) {
-        self.scanPath(self.currentPath, completion: completion)
-    }
-    
-    func scanPath(path: String, completion: (() -> Void)?) {
+    func scanPath(inArea area: AreaType, path: String, completion: (() -> Void)?) {
         self.scanFileQueue.addOperationWithBlock { () -> Void in
             if self.currentPath != path {
                 self.currentPath = path
             }
             self.currentDirectories.removeAll()
             self.currentFiles.removeAll()
+            
+            if path.hasSuffix("Documents/") {
+                self.fileInformations = NSMutableDictionary(contentsOfURL: NSURL(string: syncStatusFile, relativeToURL: TGCFileManager.libraryDirectory)!)
+            } else {
+                self.fileInformations = NSMutableDictionary(contentsOfFile: path+syncStatusFile)
+            }
             
             if self.fileInformations == nil {
                 self.fileInformations = NSMutableDictionary()
@@ -67,8 +70,16 @@ class TGCFileManager: NSObject {
             }
             for fileURL in self.enumeratorSkipAllAtPath(path) {
                 do {
-                    if self.fileInformations[(fileURL as! NSURL).path!] == nil {
-                        self.fileInformations[(fileURL as! NSURL).path!] = String(FileSyncStatus.Unsynced.rawValue)
+                    if path.hasSuffix("Documents/") {
+                        //在Documents文件夹下的没有记录的一定没有进行过任何同步操作
+                        if self.fileInformations[(fileURL as! NSURL).path!] == nil {
+                            self.fileInformations[(fileURL as! NSURL).path!] = String(FileSyncStatus.Unsynced.rawValue)
+                        }
+                    } else {
+                        //不在Documents文件夹的子文件夹下下的其ID必须与当前区域状态一致
+                        if self.fileInformations[(fileURL as! NSURL).path!] == nil || self.fileInformations[(fileURL as! NSURL).path!] as! String != String(area.rawValue) {
+                            self.fileInformations[(fileURL as! NSURL).path!] = String(area.rawValue)
+                        }
                     }
                     var isDirectory: AnyObject?
                     try (fileURL as! NSURL).getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
@@ -113,14 +124,11 @@ class TGCFileManager: NSObject {
         let fileManager = NSFileManager.defaultManager()
         for fileURL in fileManager.enumeratorAtURL(NSURL(string: path)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles], errorHandler: nil)! {
             do {
-                if self.fileInformations[(fileURL as! NSURL).path!] == nil {
-                    self.fileInformations[(fileURL as! NSURL).path!] = String(FileSyncStatus.Synced.rawValue)
-                }
                 var isDirectory: AnyObject?
                 try (fileURL as! NSURL).getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
                 if let isDirectoryBool = isDirectory as? NSNumber {
                     if isDirectoryBool.boolValue == false {
-                        self.commonSyncWith(syncCommand: ProtocolCommandElements.Add, filePath: (fileURL as! NSURL).path!)
+                        self.commonSyncWith(syncCommand: ProtocolCommandElements.Add, filePath: (fileURL as! NSURL).path!, isUpdateStatus: false)
                     }
                 }
             } catch {
@@ -129,19 +137,13 @@ class TGCFileManager: NSObject {
         }
     }
     
-    func commonSyncWith(syncCommand command: ProtocolCommandElements, filePath: String) {
+    func commonSyncWith(syncCommand command: ProtocolCommandElements, filePath: String, isUpdateStatus: Bool) {
         let uploadXML = SyncMLGenerator.generateOperationCommandWith(syncType: AlertCommandTypes.TwoWay.rawValue, anchor: NSDate().description, fileTarget: mainHost+syncArea, fileSource: filePath)
         uploadXML.addElementForSyncCommand(command.rawValue)
         let xmlPath = uploadXML.saveAsXMLFile(NSTemporaryDirectory())
         self.uploadFileRequestWith(transferHandlerFile, filePath: xmlPath!, userInfo: ["SyncType" : NSNumber(integer: AlertCommandTypes.TwoWay.rawValue)])
         if command == ProtocolCommandElements.Delete {
-            if filePath.hasSuffix("/") {
-                for key in self.fileInformations.allKeys {
-                    if (key as! String).hasPrefix(filePath) {
-                        self.fileInformations.removeObjectForKey(key)
-                    }
-                }
-            } else {
+            if isUpdateStatus {
                 self.fileInformations.removeObjectForKey(filePath)
             }
             do {
@@ -150,7 +152,9 @@ class TGCFileManager: NSObject {
                 print(error)
             }
         } else {
-            self.fileInformations[filePath] = String(FileSyncStatus.Synced.rawValue)
+            if isUpdateStatus {
+                self.fileInformations[filePath] = String(FileSyncStatus.Synced.rawValue)
+            }
         }
     }
     
@@ -159,14 +163,11 @@ class TGCFileManager: NSObject {
         let fileManager = NSFileManager.defaultManager()
         for fileURL in fileManager.enumeratorAtURL(NSURL(string: path)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles], errorHandler: nil)! {
             do {
-                if self.fileInformations[(fileURL as! NSURL).path!] == nil {
-                    self.fileInformations[(fileURL as! NSURL).path!] = String(FileSyncStatus.Backuped.rawValue)
-                }
                 var isDirectory: AnyObject?
                 try (fileURL as! NSURL).getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
                 if let isDirectoryBool = isDirectory as? NSNumber {
                     if isDirectoryBool.boolValue == false {
-                        self.uploadFileInBackupAreaWith(filePath: (fileURL as! NSURL).path!)
+                        self.uploadFileInBackupAreaWith(filePath: (fileURL as! NSURL).path!, isUpdateStatus: false)
                     }
                 }
             } catch {
@@ -175,11 +176,13 @@ class TGCFileManager: NSObject {
         }
     }
     
-    func uploadFileInBackupAreaWith(filePath path: String) {
+    func uploadFileInBackupAreaWith(filePath path: String, isUpdateStatus: Bool) {
         let uploadXML = SyncMLGenerator.generateAddCommandWith(syncType: AlertCommandTypes.BackupSync.rawValue, anchor: NSDate().description, fileTarget: mainHost+backupArea, fileSource: path)
         let xmlPath = uploadXML.saveAsXMLFile(NSTemporaryDirectory())
         self.uploadFileRequestWith(transferHandlerFile, filePath: xmlPath!, userInfo: ["SyncType" : NSNumber(integer: AlertCommandTypes.BackupSync.rawValue)])
-        self.fileInformations[path] = String(FileSyncStatus.Backuped.rawValue)
+        if isUpdateStatus {
+            self.fileInformations[path] = String(FileSyncStatus.Backuped.rawValue)
+        }
     }
     
     private func uploadFileRequestWith(serverFile: String, filePath path: String, userInfo: [String : AnyObject]?) {
@@ -220,15 +223,7 @@ class TGCFileManager: NSObject {
         let putXML = SyncMLGenerator.generateDeleteCommandWith(syncType: AlertCommandTypes.BackupSync.rawValue, anchor: NSDate().description, fileTarget: mainHost+backupArea, fileSource: relativePath.relativePath)
         let xmlPath = putXML.saveAsXMLFile(NSTemporaryDirectory())
         self.uploadFileRequestWith(transferHandlerFile, filePath: xmlPath!, userInfo: ["SyncType" : NSNumber(integer: AlertCommandTypes.BackupSync.rawValue)])
-        if path.hasSuffix("/") {
-            for key in self.fileInformations.allKeys {
-                if (key as! String).hasPrefix(path) {
-                    self.fileInformations.removeObjectForKey(key)
-                }
-            }
-        } else {
-            self.fileInformations.removeObjectForKey(path)
-        }
+        self.fileInformations.removeObjectForKey(path)
         do {
             try NSFileManager.defaultManager().removeItemAtPath(path)
         } catch {
@@ -276,9 +271,8 @@ extension TGCFileManager: ASIHTTPRequestDelegate {
             return;
         }
         if (userInfo["SyncType"] as! NSNumber).integerValue == AlertCommandTypes.TwoWay.rawValue {
-            let XML = SyncMLParser(XMLdata: request.responseData())
             let respXML = SyncMLGenerator(messageNumber: 1)
-            respXML.addStatusElementForSyncBody(1, cmdRef: 0, cmd: MessageContainerElements.SyncHdr.rawValue, targetRef: (XML?.XMLDocument!.root[MessageContainerElements.SyncHdr.rawValue][CommonUseElements.Target.rawValue][CommonUseElements.LocURI.rawValue].stringValue)!, sourceRef: (XML?.XMLDocument!.root[MessageContainerElements.SyncHdr.rawValue][CommonUseElements.Source.rawValue][CommonUseElements.LocURI.rawValue].stringValue)!, data: "200", nextSyncAnchor: nil)
+            respXML.addStatusElementForSyncBody(1, cmdRef: 0, cmd: MessageContainerElements.SyncHdr.rawValue, targetRef: (self.responseXML?.XMLDocument!.root[MessageContainerElements.SyncHdr.rawValue][CommonUseElements.Target.rawValue][CommonUseElements.LocURI.rawValue].stringValue)!, sourceRef: (self.responseXML?.XMLDocument!.root[MessageContainerElements.SyncHdr.rawValue][CommonUseElements.Source.rawValue][CommonUseElements.LocURI.rawValue].stringValue)!, data: "200", nextSyncAnchor: nil)
             let xmlPath = respXML.saveAsXMLFile(NSTemporaryDirectory())
             self.uploadFileRequestWith(transferHandlerFile, filePath: xmlPath!, userInfo: nil)
         }
@@ -293,8 +287,9 @@ extension TGCFileManager: ASIHTTPRequestDelegate {
     }
     
     func request(request: ASIHTTPRequest!, didReceiveData data: NSData!) {
-        if let parser = SyncMLParser(XMLdata: data) {
-            if let commandStatus = parser.commandStatus {
+        self.responseXML = SyncMLParser(XMLdata: data)
+        if self.responseXML != nil {
+            if let commandStatus = self.responseXML!.commandStatus {
                 if commandStatus[CommonUseElements.Cmd.rawValue] == ProtocolCommandElements.Add.rawValue {
                     var serverFile = syncUploadHandlerFile
                     if let syncType = request.userInfo["SyncType"] {
@@ -302,7 +297,7 @@ extension TGCFileManager: ASIHTTPRequestDelegate {
                             serverFile = backupUploadHandlerFile
                         }
                     }
-                    self.uploadFileRequestWith(serverFile, filePath: parser.syncStatus![CommonUseElements.SourceRef.rawValue]!, userInfo: nil)
+                    self.uploadFileRequestWith(serverFile, filePath: self.responseXML!.syncStatus![CommonUseElements.SourceRef.rawValue]!, userInfo: nil)
                 }
             }
         } else {
