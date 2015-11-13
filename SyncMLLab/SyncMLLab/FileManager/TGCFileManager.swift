@@ -103,7 +103,7 @@ class TGCFileManager: NSObject {
     }
     
     private func enumeratorSkipAllAtPath(path: String) -> NSDirectoryEnumerator {
-        return NSFileManager.defaultManager().enumeratorAtURL(NSURL(string: path)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles, NSDirectoryEnumerationOptions.SkipsSubdirectoryDescendants], errorHandler: nil)!
+        return NSFileManager.defaultManager().enumeratorAtURL(NSURL(string: path.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet())!)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles, NSDirectoryEnumerationOptions.SkipsSubdirectoryDescendants], errorHandler: nil)!
     }
     
     func getNameBy(URL: NSURL) -> String? {
@@ -122,7 +122,7 @@ class TGCFileManager: NSObject {
     func uploadDocumentInSyncAreaWith(documentPath path: String) {
         self.fileInformations[path] = String(FileSyncStatus.Synced.rawValue)
         let fileManager = NSFileManager.defaultManager()
-        for fileURL in fileManager.enumeratorAtURL(NSURL(string: path)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles], errorHandler: nil)! {
+        for fileURL in fileManager.enumeratorAtURL(NSURL(string: path.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet())!)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles], errorHandler: nil)! {
             do {
                 var isDirectory: AnyObject?
                 try (fileURL as! NSURL).getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
@@ -161,7 +161,7 @@ class TGCFileManager: NSObject {
     func uploadDocumentInBackupAreaWith(filePath path: String) {
         self.fileInformations[path] = String(FileSyncStatus.Backuped.rawValue)
         let fileManager = NSFileManager.defaultManager()
-        for fileURL in fileManager.enumeratorAtURL(NSURL(string: path)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles], errorHandler: nil)! {
+        for fileURL in fileManager.enumeratorAtURL(NSURL(string: path.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet())!)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles], errorHandler: nil)! {
             do {
                 var isDirectory: AnyObject?
                 try (fileURL as! NSURL).getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
