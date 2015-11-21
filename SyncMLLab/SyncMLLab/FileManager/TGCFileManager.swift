@@ -158,6 +158,28 @@ class TGCFileManager: NSObject {
         }
     }
     
+    func uploadDocumentInBackupAreaWith(filePath path: String, var numberLimit: Int) {
+        self.fileInformations[path] = String(FileSyncStatus.Backuped.rawValue)
+        let fileManager = NSFileManager.defaultManager()
+        for fileURL in fileManager.enumeratorAtURL(NSURL(string: path.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet())!)!, includingPropertiesForKeys: [NSURLNameKey, NSURLIsDirectoryKey], options: [NSDirectoryEnumerationOptions.SkipsPackageDescendants, NSDirectoryEnumerationOptions.SkipsHiddenFiles], errorHandler: nil)! {
+            if numberLimit == 0 {
+                break
+            }
+            do {
+                var isDirectory: AnyObject?
+                try (fileURL as! NSURL).getResourceValue(&isDirectory, forKey: NSURLIsDirectoryKey)
+                if let isDirectoryBool = isDirectory as? NSNumber {
+                    if isDirectoryBool.boolValue == false {
+                        self.uploadFileInBackupAreaWith(filePath: (fileURL as! NSURL).path!, isUpdateStatus: false)
+                        numberLimit--
+                    }
+                }
+            } catch {
+                print(error)
+            }
+        }
+    }
+    
     func uploadDocumentInBackupAreaWith(filePath path: String) {
         self.fileInformations[path] = String(FileSyncStatus.Backuped.rawValue)
         let fileManager = NSFileManager.defaultManager()
@@ -282,6 +304,7 @@ extension TGCFileManager: ASIHTTPRequestDelegate {
             let respXML = SyncMLGenerator(messageNumber: 1)
             respXML.addStatusElementForSyncBody(1, cmdRef: 0, cmd: MessageContainerElements.SyncHdr.rawValue, targetRef: (self.responseXML?.XMLDocument!.root[MessageContainerElements.SyncHdr.rawValue][CommonUseElements.Target.rawValue][CommonUseElements.LocURI.rawValue].stringValue)!, sourceRef: (self.responseXML?.XMLDocument!.root[MessageContainerElements.SyncHdr.rawValue][CommonUseElements.Source.rawValue][CommonUseElements.LocURI.rawValue].stringValue)!, data: "200", nextSyncAnchor: nil)
             let xmlPath = respXML.saveAsXMLFile(NSTemporaryDirectory())
+            sleep(2)
             self.uploadFileRequestWith(transferHandlerFile, filePath: xmlPath!, userInfo: nil)
         }
     }

@@ -20,3 +20,6 @@ let backupArea = "BackupArea/"
 let syncStatusFile = ".SyncStatus"
 
 let DirectoryDidChangeNotification = "directoryDidChangeNotification"
+
+var beginTime = NSDate()
+var endTime = NSDate()

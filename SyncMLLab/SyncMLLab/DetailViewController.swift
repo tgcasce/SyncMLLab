@@ -26,6 +26,8 @@ class DetailViewController: UITableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.title = (self.currentPath as NSString).lastPathComponent
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "同步", style: UIBarButtonItemStyle.Plain, target: self, action: "syncLab")
+        
         TGCFileManager.defaultManager.transferCompletionHandler = { () -> Void in
             self.currentDirectories.removeAll()
             self.currentFiles.removeAll()
@@ -43,7 +45,14 @@ class DetailViewController: UITableViewController {
                     }
                 }
             }
-            self.tableView.reloadData()
+//            self.tableView.reloadData()
+            endTime = NSDate()
+            let deltaTime = "\(endTime.timeIntervalSinceDate(beginTime))"
+            do {
+                try deltaTime.writeToFile(TGCFileManager.documentDirectory+"/00000-00000-00000-00000-00000/LabTest.txt", atomically: true, encoding: NSUTF8StringEncoding)
+            } catch {
+                print(error)
+            }
         }
     }
     
@@ -68,6 +77,36 @@ class DetailViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    func syncLab() {
+        beginTime = NSDate()
+        let alertController = UIAlertController(title: "请选择操作", message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        let syncAction = UIAlertAction(title: "全部同步", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
+            TGCFileManager.defaultManager.uploadDocumentInSyncAreaWith(documentPath: TGCFileManager.documentDirectory+"/")
+        }
+        let backupAction = UIAlertAction(title: "备份同步", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
+            TGCFileManager.defaultManager.uploadDocumentInBackupAreaWith(filePath: TGCFileManager.documentDirectory+"/")
+        }
+        let optionalAction = UIAlertAction(title: "可选备份同步", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
+            let optAlertController = UIAlertController(title: "请输入非频繁修改文件的数量", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
+            let confirmAction = UIAlertAction(title: "确定", style: UIAlertActionStyle.Default) { [unowned optAlertController] (alertAction) -> Void in
+                if let numberLimit = Int(optAlertController.textFields![0].text!) {
+                    TGCFileManager.defaultManager.uploadDocumentInBackupAreaWith(filePath: TGCFileManager.documentDirectory+"/", numberLimit: numberLimit)
+                }
+            }
+            optAlertController.addAction(confirmAction)
+            optAlertController.addTextFieldWithConfigurationHandler { (textField) -> Void in
+                textField.placeholder = "非频繁修改文件数..."
+            }
+            self.presentViewController(optAlertController, animated: true, completion: nil)
+        }
+        let cancenlAction = UIAlertAction(title: "取消", style: UIAlertActionStyle.Cancel, handler: nil)
+        alertController.addAction(syncAction)
+        alertController.addAction(backupAction)
+        alertController.addAction(optionalAction)
+        alertController.addAction(cancenlAction)
+        self.presentViewController(alertController, animated: true, completion: nil)
+    }
+    
     func configureView() {
         self.currentDirectories.removeAll()
         self.currentFiles.removeAll()
