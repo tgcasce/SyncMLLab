@@ -210,7 +210,15 @@ class TGCFileManager: NSObject {
         let putXML = SyncMLGenerator.generatePutCommandWith(syncType: AlertCommandTypes.BackupSync.rawValue, anchor: NSDate().description, fileTarget: mainHost+syncArea, fileSource: relativePath.relativePath)
         let xmlPath = putXML.saveAsXMLFile(NSTemporaryDirectory())
         self.uploadFileRequestWith(transferHandlerFile, filePath: xmlPath!, userInfo: ["SyncType" : NSNumber(integer: AlertCommandTypes.BackupSync.rawValue)])
-        self.fileInformations[path] = String(FileSyncStatus.Synced.rawValue)
+        
+        let newPath = TGCFileManager.documentDirectory + "/" + relativePath.fileName
+        if self.currentPath.hasSuffix("Documents/") == false {
+            let documentsInfo = NSMutableDictionary(contentsOfURL: NSURL(string: syncStatusFile, relativeToURL: TGCFileManager.libraryDirectory)!)!
+            documentsInfo[newPath] = String(FileSyncStatus.Synced.rawValue)
+            documentsInfo.writeToURL(NSURL(string: syncStatusFile, relativeToURL: TGCFileManager.libraryDirectory)!, atomically: true)
+        } else {
+            self.fileInformations[path] = String(FileSyncStatus.Synced.rawValue)
+        }
         do {
             try NSFileManager.defaultManager().moveItemAtPath(path, toPath: TGCFileManager.documentDirectory+"/"+relativePath.fileName)
         } catch {
